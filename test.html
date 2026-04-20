@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BMS Admin - Dashboard Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#F84464",
+              "primary-dark": "#b8083b",
+              "surface": "#FFFFFF",
+              "background": "#F5F5F7",
+              "surface-container": "#FFFFFF",
+              "surface-container-low": "#F9FAFB",
+              "surface-container-high": "#F2F4F7",
+              "on-surface": "#1F2937",
+              "on-surface-variant": "#6B7280",
+              "outline-variant": "#E5E7EB",
+              "tertiary": "#4B5563",
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.375rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bms-card-shadow {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #F5F5F7; }
+        ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #F84464; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased">
+<!-- SideNavBar (Authority: Shared Components JSON - COMPONENTS_8) -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-zinc-950 flex flex-col border-r border-zinc-100 dark:border-zinc-800 font-['Inter'] font-medium antialiased z-50">
+<div class="p-8">
+<div class="text-2xl font-black tracking-tighter text-[#b8083b] dark:text-[#db2d51]">BMS Admin</div>
+<div class="text-[10px] uppercase tracking-[0.1em] text-zinc-400 mt-1">Super Admin</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<!-- Dashboard (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 bg-[#fcf9f8] dark:bg-zinc-900 text-[#b8083b] dark:text-[#db2d51] font-bold rounded-lg border-r-4 border-[#b8083b] scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-600 dark:text-zinc-400 hover:text-[#b8083b] dark:hover:text-[#db2d51] hover:bg-[#fcf9f8] dark:hover:bg-zinc-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">movie</span>
+<span>Movies</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-600 dark:text-zinc-400 hover:text-[#b8083b] dark:hover:text-[#db2d51] hover:bg-[#fcf9f8] dark:hover:bg-zinc-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">theater_comedy</span>
+<span>Theaters</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-600 dark:text-zinc-400 hover:text-[#b8083b] dark:hover:text-[#db2d51] hover:bg-[#fcf9f8] dark:hover:bg-zinc-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span>Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-600 dark:text-zinc-400 hover:text-[#b8083b] dark:hover:text-[#db2d51] hover:bg-[#fcf9f8] dark:hover:bg-zinc-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Users</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-600 dark:text-zinc-400 hover:text-[#b8083b] dark:hover:text-[#db2d51] hover:bg-[#fcf9f8] dark:hover:bg-zinc-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Reports</span>
+</a>
+</nav>
+<div class="px-6 py-6">
+<button class="w-full py-3 bg-[#F84464] text-white font-bold rounded-lg text-sm shadow-md hover:bg-[#b8083b] transition-colors">
+            Add New Event
+        </button>
+</div>
+<div class="p-4 border-t border-zinc-100 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-zinc-600 hover:text-[#b8083b] transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-lg">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-zinc-600 hover:text-[#b8083b] transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-lg">logout</span>
+<span>Logout</span>
+</a>
+<div class="flex items-center gap-3 px-4 py-4 mt-4 bg-zinc-50 rounded-xl">
+<img alt="Admin Profile" class="w-8 h-8 rounded-full border border-zinc-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkGf8Ha7QqKc2e-fFhJcmsV9WRWwnLn1dUd9aTYF-0cvb22HzNc044aMnWLp34U6dCB0LDQ-NG9JpDNzPuYpk4qdMHI8qkSB63OYSCH0VfVPY2IAr_f5IQlvgf4wKo1hBc4azGanrugziSvxMmyGfbe-_2x-IkwZd-ZJO7oAIfsI8oM8f3XLBWwfL9KuobJsujIrDwewFoCnX2NIgwhl4qgI_FQ7W56q2KFdVXREa0NnZTbRF6RM2lI4P7a0vup0hPph_i9dGaiVvQ"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate">Director Smith</p>
+<p class="text-[10px] text-zinc-500">Lead Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar (Authority: Shared Components JSON - COMPONENTS_8) -->
+<header class="sticky top-0 right-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl flex justify-between items-center w-full px-6 py-3 ml-64 max-w-[calc(100%-16rem)] shadow-sm">
+<div class="flex items-center gap-8">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400">search</span>
+<input class="bg-zinc-100 border-none rounded-lg pl-10 pr-6 py-2 text-sm focus:ring-2 focus:ring-[#F84464]/20 w-80 transition-all" placeholder="Search movies, events, or bookings..." type="text"/>
+</div>
+<nav class="hidden lg:flex items-center gap-6 font-['Inter'] text-sm tracking-tight">
+<a class="text-[#b8083b] font-semibold border-b-2 border-[#b8083b] pb-1" href="#">Analytics</a>
+<a class="text-zinc-500 hover:text-[#b8083b] transition-all" href="#">Live Feed</a>
+</nav>
+</div>
+<div class="flex items-center gap-5">
+<button class="relative text-zinc-500 hover:text-[#b8083b] transition-all">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-[#F84464] rounded-full border-2 border-white"></span>
+</button>
+<button class="text-zinc-500 hover:text-[#b8083b] transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-6 w-px bg-zinc-200 mx-1"></div>
+<div class="flex items-center gap-3 pl-2 cursor-pointer group">
+<span class="text-sm font-semibold text-zinc-700 group-hover:text-[#F84464] transition-colors">Profile</span>
+<img alt="Admin Avatar" class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANtJbG3m9H-c260nco4CUia2coTmBCdl3TwFNCGTTHOQXWPQtUFwJCmUhojEMnxY-bqp1yLTCHXs_YZJ6YNMLVlbS2xyNLjSRfCIVFDdPlEezyJVI9HxSIDyN78QFjcFTZCLULlAAIXNnRp08yhYxeUu5an_YbHRLTMG-XUGVf6RVepGwHVT_lhg7KCk9NKkNSjjkV9ceCD8Z6mQhG4rK70zk3sE7vW1pZK2OzLqtSs169vxxA9xms0wx1Y6QNwgYY9LUKwoi4DCgr"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 p-8">
+<!-- Header Section -->
+<header class="mb-8">
+<h1 class="text-3xl font-extrabold tracking-tight text-zinc-900">Box Office <span class="text-[#F84464]">Intelligence</span></h1>
+<p class="text-zinc-500 mt-1 font-medium">Platform performance for the last 24 hours.</p>
+</header>
+<!-- Metrics Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<!-- Main Revenue KPI -->
+<div class="md:col-span-2 bg-white p-8 rounded-2xl relative overflow-hidden bms-card-shadow border border-zinc-100">
+<div class="absolute top-0 right-0 p-8 text-zinc-50 opacity-10">
+<span class="material-symbols-outlined text-8xl">payments</span>
+</div>
+<p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-2">Total Ticket Sales</p>
+<div class="flex items-end gap-3">
+<h2 class="text-5xl font-black font-headline text-zinc-900 tracking-tighter">$142,850.00</h2>
+<span class="text-emerald-500 font-bold text-sm mb-2 flex items-center bg-emerald-50 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-sm mr-0.5">trending_up</span> +12.5%
+                </span>
+</div>
+<!-- Simple Bar Chart -->
+<div class="mt-8 h-24 flex items-end gap-2">
+<div class="flex-1 bg-zinc-100 rounded-t h-[40%] hover:bg-[#F84464]/40 transition-colors"></div>
+<div class="flex-1 bg-zinc-100 rounded-t h-[60%] hover:bg-[#F84464]/40 transition-colors"></div>
+<div class="flex-1 bg-zinc-100 rounded-t h-[35%] hover:bg-[#F84464]/40 transition-colors"></div>
+<div class="flex-1 bg-zinc-100 rounded-t h-[75%] hover:bg-[#F84464]/40 transition-colors"></div>
+<div class="flex-1 bg-zinc-100 rounded-t h-[100%] hover:bg-[#F84464]/40 transition-colors"></div>
+<div class="flex-1 bg-[#F84464] rounded-t h-[90%] shadow-lg shadow-[#F84464]/20"></div>
+<div class="flex-1 bg-[#F84464]/40 rounded-t h-[70%]"></div>
+<div class="flex-1 bg-zinc-100 rounded-t h-[55%]"></div>
+</div>
+</div>
+<!-- Active Movies -->
+<div class="bg-white p-8 rounded-2xl flex flex-col justify-between group hover:border-[#F84464]/30 transition-all border border-zinc-100 bms-card-shadow">
+<div>
+<span class="material-symbols-outlined text-[#F84464] mb-4 block group-hover:scale-110 transition-transform bg-[#F84464]/10 w-10 h-10 flex items-center justify-center rounded-lg">movie_filter</span>
+<p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Active Movies</p>
+</div>
+<div>
+<h3 class="text-4xl font-black font-headline text-zinc-900">42</h3>
+<p class="text-[11px] text-[#F84464] font-semibold mt-1">8 Premiering This Week</p>
+</div>
+</div>
+<!-- New Users -->
+<div class="bg-white p-8 rounded-2xl flex flex-col justify-between group hover:border-zinc-300 transition-all border border-zinc-100 bms-card-shadow">
+<div>
+<span class="material-symbols-outlined text-zinc-600 mb-4 block group-hover:scale-110 transition-transform bg-zinc-100 w-10 h-10 flex items-center justify-center rounded-lg">person_add</span>
+<p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">New Users</p>
+</div>
+<div>
+<h3 class="text-4xl font-black font-headline text-zinc-900">1,204</h3>
+<p class="text-[11px] text-emerald-600 font-semibold mt-1">Growth rate: 4.2%</p>
+</div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Recent Bookings Table -->
+<div class="lg:col-span-2 space-y-4">
+<div class="flex items-center justify-between px-1">
+<h2 class="text-xl font-bold tracking-tight text-zinc-900">Recent Bookings</h2>
+<button class="text-sm font-bold text-[#F84464] hover:text-[#b8083b] transition-all">View All Activity</button>
+</div>
+<div class="bg-white rounded-2xl border border-zinc-100 bms-card-shadow overflow-hidden">
+<div class="grid grid-cols-5 p-5 bg-zinc-50 border-b border-zinc-100 text-[10px] uppercase font-black tracking-widest text-zinc-500">
+<div class="col-span-2">Movie &amp; Show</div>
+<div>User</div>
+<div>Status</div>
+<div class="text-right">Revenue</div>
+</div>
+<div class="divide-y divide-zinc-50">
+<!-- Row 1 -->
+<div class="grid grid-cols-5 p-5 items-center hover:bg-zinc-50/80 transition-colors">
+<div class="col-span-2 flex items-center gap-4">
+<div class="w-12 h-16 rounded overflow-hidden bg-zinc-100">
+<img alt="Movie Poster" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDFN8A1nAeL5LyDCnqu4465uI3Tm62ENCFZ8I97dnJMsw1pxJ_x_Zc2r49eEON0BhLrtbMHRSS-5auH2xIsFt1u5RefrXPSwUf6IH8uyVztzX6dEHubTzkxG_kFSJz2wPwktjwmOTL3GvN-V0eCFKYJNuAQdxohJVALGOrxobfa-HS1U2jhfG_G-rc3JGbK27Q8Z943eVLQ6oXypCECmsYTZMHqr7DHJzEvMPAIPauBzoEZlAZEfY1v-aMevghqnmtZ7rjcyH1lTMt"/>
+</div>
+<div>
+<p class="font-bold text-sm text-zinc-900">Neon Horizon</p>
+<p class="text-xs text-zinc-500">IMAX - Screen 4</p>
+</div>
+</div>
+<div class="text-sm text-zinc-600">Alex Rivera</div>
+<div>
+<span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full uppercase">Confirmed</span>
+</div>
+<div class="text-right font-bold text-zinc-900">$34.50</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-5 p-5 items-center hover:bg-zinc-50/80 transition-colors">
+<div class="col-span-2 flex items-center gap-4">
+<div class="w-12 h-16 rounded overflow-hidden bg-zinc-100">
+<img alt="Movie Poster" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv9DdyEbkUPJoRCV4fhkKwCftD6godT8mAgfz2nKaziyhKPJjnRNkNcxag_DD5I8fQVHFEWC-PyB6BDBeuxfNIvArm0Z4WFT3xso7uXkNBvTIgkBdy45saT3-T4gZu-MWkOCiJAsGyJdZJvnPlIPUU6RUaBdeAwmSmr_WGuBvYwpvCWZAfnDf6gbDwFvPsgotgCy65ovKGKZp9wuijssoUf0DBr67js0RDN63tTj6qEsl3VZfwranexd7fE03LIva4DaC_32WAGBUx"/>
+</div>
+<div>
+<p class="font-bold text-sm text-zinc-900">Void of Silence</p>
+<p class="text-xs text-zinc-500">Dolby Cinema</p>
+</div>
+</div>
+<div class="text-sm text-zinc-600">Sarah Chen</div>
+<div>
+<span class="px-3 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-full uppercase">Processing</span>
+</div>
+<div class="text-right font-bold text-zinc-900">$22.00</div>
+</div>
+<!-- Row 3 -->
+<div class="grid grid-cols-5 p-5 items-center hover:bg-zinc-50/80 transition-colors">
+<div class="col-span-2 flex items-center gap-4">
+<div class="w-12 h-16 rounded overflow-hidden bg-zinc-100">
+<img alt="Movie Poster" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaaAWagdn1WpI7nshUiOsPYckJssIpx2Sh79y9jyDCR4E6Dc-rp3ntI3lzEmr_gnBc3mytvZYXMl1XicoyCosrpLDIb0gHIn2JTw83AmXr5GQuYRxOdrXM_F5IRY8XaekK5UTLAaXyNAHAcgzU9ku9PNsRHxuPs474gHi6HiLYmOStpiNE19BK1D45cU3QtnbRnqOzaJbhxFnaHZ21eJbfLtZ7iIbNMsSFJVqkhy7Eo5x7ab1XIZQu0c9fzXIbSlZfmIE7cqQ1AmgY"/>
+</div>
+<div>
+<p class="font-bold text-sm text-zinc-900">Midnight Echoes</p>
+<p class="text-xs text-zinc-500">Premiere Suite</p>
+</div>
+</div>
+<div class="text-sm text-zinc-600">Marcus Thorne</div>
+<div>
+<span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full uppercase">Confirmed</span>
+</div>
+<div class="text-right font-bold text-zinc-900">$112.00</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Cards -->
+<div class="space-y-6">
+<!-- Theatre Occupancy -->
+<div class="bg-white p-6 rounded-2xl border border-zinc-100 bms-card-shadow">
+<h2 class="text-sm font-bold tracking-tight mb-6 flex justify-between items-center text-zinc-900">
+                    Live Theatre Occupancy
+                    <span class="w-2 h-2 bg-[#F84464] rounded-full animate-pulse"></span>
+</h2>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="text-zinc-500 font-medium">IMAX Theatre 1</span>
+<span class="text-[#F84464] font-bold">92%</span>
+</div>
+<div class="h-2 w-full bg-zinc-100 rounded-full overflow-hidden">
+<div class="h-full bg-[#F84464]" style="width: 92%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="text-zinc-500 font-medium">Screen 4 (Premiere)</span>
+<span class="text-[#F84464] font-bold">65%</span>
+</div>
+<div class="h-2 w-full bg-zinc-100 rounded-full overflow-hidden">
+<div class="h-full bg-[#F84464]" style="width: 65%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="text-zinc-500 font-medium">Dolby Hall A</span>
+<span class="text-zinc-400 font-bold">41%</span>
+</div>
+<div class="h-2 w-full bg-zinc-100 rounded-full overflow-hidden">
+<div class="h-full bg-zinc-300" style="width: 41%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Management Card -->
+<div class="bg-zinc-900 p-6 rounded-2xl text-white">
+<h2 class="text-sm font-bold mb-4 opacity-90">Quick Management</h2>
+<div class="grid grid-cols-2 gap-3">
+<button class="p-3 bg-white/10 rounded-xl text-[11px] font-bold hover:bg-white/20 transition-colors flex flex-col items-center gap-2 group">
+<span class="material-symbols-outlined text-[#F84464] text-lg group-hover:scale-110 transition-transform">confirmation_number</span>
+                        Bulk Add
+                    </button>
+<button class="p-3 bg-white/10 rounded-xl text-[11px] font-bold hover:bg-white/20 transition-colors flex flex-col items-center gap-2 group">
+<span class="material-symbols-outlined text-emerald-400 text-lg group-hover:scale-110 transition-transform">schedule</span>
+                        Update
+                    </button>
+<button class="p-3 bg-white/10 rounded-xl text-[11px] font-bold hover:bg-white/20 transition-colors flex flex-col items-center gap-2 group">
+<span class="material-symbols-outlined text-amber-400 text-lg group-hover:scale-110 transition-transform">mail</span>
+                        Alerts
+                    </button>
+<button class="p-3 bg-white/10 rounded-xl text-[11px] font-bold hover:bg-white/20 transition-colors flex flex-col items-center gap-2 group">
+<span class="material-symbols-outlined text-sky-400 text-lg group-hover:scale-110 transition-transform">analytics</span>
+                        Report
+                    </button>
+</div>
+</div>
+<!-- Promotion Banner -->
+<div class="relative h-40 rounded-2xl overflow-hidden group bms-card-shadow">
+<img alt="VIP Experience" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM4a5WUZYY6AQnwB5P1kN9fXxwYrh7fNudW_0vkIvDJdgD0M4PiAFYRl4N7PENKiOnYI_JXbZ9Tv8NUYU81jbpJghlOhpAF0l4lPAgVar_CxLwG_8u5jrU3bHjE0IyiK3S_29kRd2jP8o6nXvCFfbMaJeevu9seg3q3N1IMwLiCnzO7JDezaLifaqFNVeyZxS1ZanGUqnc2DSa55lxrRdMYVS72Ac7IVE_S_wZdgfp678LCGxZy969GswDk5QH8mWKeUmUkvGe0lf6"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-5 flex flex-col justify-end">
+<p class="text-[10px] uppercase font-black tracking-widest text-[#F84464] mb-1">Upcoming Premiere</p>
+<h3 class="font-bold text-lg text-white">VIP Experience Launch</h3>
+<p class="text-white/60 text-[10px]">Managing high-capacity ticket queues</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
