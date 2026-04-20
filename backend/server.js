@@ -12,19 +12,19 @@ const bootstrap = async () => {
   try {
     // 1. Connect to Database
     await connectDB();
-    console.log('✅ Database connected successfully');
+    console.log('Database connected successfully');
 
     // 2. Start Background Jobs
     startSeatUnlockJob();
-    console.log('✅ Background jobs initialized');
+    console.log('Background jobs initialized');
 
     // 3. Start Listening
     app.listen(PORT, () => {
-      console.log(`🚀 Server is listening on http://localhost:${PORT}`);
+      console.log(`Server is listening on http://localhost:${PORT}`);
     });
 
   } catch (error) {
-    console.error('❌ Critical failure during startup:');
+    console.error('Critical failure during startup:');
     console.error(error);
     process.exit(1); // Exit process with failure code
   }
