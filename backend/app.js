@@ -2,7 +2,7 @@ import express from 'express';
 import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import passport from 'passport';
+import passport from "./src/config/passport.config.js";
 
 // Route Imports
 import authRoutes from './src/modules/auth/auth.routes.js';
@@ -28,7 +28,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
   origin: ["http://localhost:5173"],
-  credentials: true // Fixed typo: 'credentail' -> 'credentials'
+  credentials: true 
 }));
 app.use(passport.initialize());
 

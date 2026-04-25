@@ -1,16 +1,19 @@
 import passport from 'passport'
-import { strategy as GoogleStrategy } from 'passport-google-oauth20'
-import { User } from '../src/modules/users/user.model'
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
+import { User } from '../modules/users/models/user.model.js'
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSercet: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback"
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+       callbackURL: `${process.env.BACKEND_URL}/api/auth/google/callback`
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        
+        console.log(passport.strategies);
+
         const email = profile.emails[0].value
         const avatar = profile.photos[0]?.value
 
@@ -22,17 +25,21 @@ passport.use(
             user.googleId = profile.id
           }
 
-          if (!user.avatar && avatar) {
-            user.avatar = avatar
+          if (!user.avatar.url && avatar) {
+            user.avatar.url = avatar
           }
           await user.save()
         } else {
+          console.log(avatar);
+          
           user = await User.create({
             username: profile.displayName,
             email,
             googleId: profile.id,
             authProviders: ['google'],
-            avatar,
+            avatar:{
+              url:avatar
+            },
             isVerified: true
           })
         }
@@ -44,3 +51,5 @@ passport.use(
     }
   )
 )
+
+export default passport;

@@ -1,5 +1,6 @@
 import app from './app.js';
 import connectDB from './src/config/db.js';
+import { connectRedis } from './src/config/redisClient.js';
 import { startSeatUnlockJob } from "./src/jobs/seatUnlocks.job.js";
 
 const PORT = process.env.PORT || 3000;
@@ -10,9 +11,10 @@ const PORT = process.env.PORT || 3000;
  */
 const bootstrap = async () => {
   try {
+
     // 1. Connect to Database
     await connectDB();
-    console.log('Database connected successfully');
+    await connectRedis()
 
     // 2. Start Background Jobs
     startSeatUnlockJob();

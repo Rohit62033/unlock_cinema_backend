@@ -5,28 +5,33 @@ import { tokenService } from './utils/TokenService.js'
 import { AppError } from '../../errors/AppErrors.js'
 import { HTTP_STATUS } from '../../constants/httpStatus.js'
 import { ERROR_CODES } from '../../errors/errorCodes.js'
-import { tempUserRepository } from '../users/repo/tempUser.repo.js'
 import { userRepository } from '../users/repo/user.repo.js'
 import { otpHasher, passwordHasher } from '../../utils/generateHash.js'
-import { PasswordResetRepository } from "../users/repo/passwordReset.repo.js"
 import { sessionRepository } from "./repo/session.repo.js"
+import { redisService } from "../../utils/redisService.js"
+import redisClient from "../../config/redisClient.js"
 
 
 export const verifyOtpService = async ({ email, otp, ip, userAgent }) => {
 
-  const tempUser = await tempUserRepository.findTempUserByEmail(email)  
+  const key = `register:${email}`
+
+  const tempUser = await redisService.get(key)
 
   if (!tempUser) throw errorFactory.auth.otpInvalid()
 
   if (tempUser.otpAttempts >= 4) throw errorFactory.auth.otpAttemptsExceeded()
 
-  if (tempUser.otpExpiresAt < new Date()) throw errorFactory.auth.otpExpired()
-
   const isValid = await otpHasher.verify(otp, tempUser.otp)
 
   if (!isValid) {
-    tempUser.otpAttempts += 1
-    await tempUserRepository.saveTempUser(tempUser)
+    // 1. Update the local object
+    tempUser.otpAttempts = (tempUser.otpAttempts || 0) + 1;
+
+    await redisClient.set(key, JSON.stringify(tempUser), {
+      KEEPTTL: true
+    })
+
     throw errorFactory.auth.otpInvalid()
   }
 
@@ -50,7 +55,7 @@ export const verifyOtpService = async ({ email, otp, ip, userAgent }) => {
     // ip:rep.ip
   })
 
-  await tempUserRepository.deleteTempUser(email)
+  await redisService.del(`register:${email}`)
 
   return { user, accessToken, refreshToken }
 }
@@ -66,29 +71,36 @@ export const registerService = async ({ username, email, password }) => {
 
 
   const otp = generateOtp()
-  console.log('ACTUAL GENERATED OTP:', otp);
-
-  const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000)
 
   const hashedOtp = await otpHasher.hash(otp)
 
-  let tempUser = await tempUserRepository.findTempUserByEmail(email)
+  const key = `register:${email}`
 
-  if (tempUser) {
-    tempUser.otp = hashedOtp
-    tempUser.otpExpiresAt = otpExpiresAt
-    tempUser.otpAttempts = 0
-    tempUser.otpResendCount = 0
-    await tempUserRepository.saveTempUser(tempUser)
+  const existingTemp = await redisService.get(key)
+  let data
+
+  if (existingTemp) {
+
+    data = {
+      ...existingTemp,
+      otp: hashedOtp,
+      otpAttempts: 0,
+      otpResendCount: (existingTemp.otpResendCount || 0) + 1,
+
+    }
+
   } else {
-    await tempUserRepository.createTempUser({
-      email: email,
-      username: username,
+    data = {
+      email,
+      username,
       password: hashedPassword,
       otp: hashedOtp,
-      otpExpiresAt
-    })
+      otpAttempts: 0,
+      otpResendCount: 0,
+    }
   }
+
+  await redisService.set(key, data, 600)
 
   await sendOtpEmail(email, otp)
 }
@@ -99,22 +111,19 @@ export const loginService = async ({ email, password }) => {
 
   if (!user) throw errorFactory.auth.userNotFound()
 
-  if (user.failedLoginAttempts >= 3) throw new AppError("User is locked for 24 hours", HTTP_STATUS.FORBIDDEN, ERROR_CODES.FORBIDDEN)
+  const key = `login_attempts:${email}`
+  const attempts = await redisService.incr(key, 86400)
+
+  // if (attempts > 3) throw new AppError("User is locked for 24 hours", HTTP_STATUS.FORBIDDEN, ERROR_CODES.FORBIDDEN)
+
 
   const isPassMatched = await passwordHasher.compare(password, user.password)
 
-  if (!isPassMatched) {
-    user.failedLoginAttempts = user.failedLoginAttempts + 1
-    await userRepository.saveUser(user)
+  if (!isPassMatched)
     throw errorFactory.auth.invalidCredentials()
-  }
+
 
   const { accessToken, refreshToken } = tokenService.generateTokens(user._id, user.role)
-
-  if (user.failedLoginAttempts !== 0) {
-    user.failedLoginAttempts = 0
-    await userRepository.saveUser(user)
-  }
 
   await sessionRepository.createSession({
     user: user._id,
@@ -126,7 +135,9 @@ export const loginService = async ({ email, password }) => {
 
 export const otpResendService = async ({ email }) => {
 
-  const user = await tempUserRepository.findTempUserByEmail(email)
+  const key = `register:${email}`
+
+  const user = await redisService.get(key)
 
   if (!user) throw errorFactory.auth.userNotFound()
 
@@ -134,18 +145,15 @@ export const otpResendService = async ({ email }) => {
 
   const otp = generateOtp()
 
-  const hashedOtp =await otpHasher.hash(otp)
+  const hashedOtp = await otpHasher.hash(otp)
 
-  await tempUserRepository.findTempUserAndUpdate(
-    { email },
-    {
-      $set: {
-        otp: hashedOtp,
-        otpExpiresAt: new Date(Date.now() + 10 * 60 * 1000)
-      },
-      $inc: { otpResendCount: 1 }
-    }
-  )
+  const data = {
+    ...user,
+    otp: hashedOtp,
+    otpResendCount: user.otpResendCount ? user.otpResendCount + 1 : 1
+  }
+
+  await redisService.set(key, data, 600)
 
   await sendOtpEmail(email, otp)
 }
@@ -234,44 +242,49 @@ export const forgotPasswordService = async (email) => {
 
   const hashedOtp = await otpHasher.hash(otp)
 
-  sendOtpEmail(email, otp)
+  const key = `reset:${email}`
 
-  const forgetPasswordUser = await PasswordResetRepository.findPasswordResetByEmail(email)
+  const existing = await redisService.get(key)
 
-
-  if (forgetPasswordUser) {
-    forgetPasswordUser.otp = hashedOtp
-    forgetPasswordUser.otpCount = forgetPasswordUser.otpCount + 1
-    return await PasswordResetRepository.savePasswordReset(forgetPasswordUser)
-  } else {
-
-    return await PasswordResetRepository.createPasswordResetUser({
-      otp: hashedOtp,
-      otpCount: 1,
-      email
-    })
+  const data = {
+    ...user,
+    otp: hashedOtp,
+    attempts: 0,
+    resendCount: existing?.resendCount ? existing.resendCount + 1 : 1
   }
+
+  await redisService.set(key, data, 600)
+
+  await sendOtpEmail(email, otp)
 
 }
 
 export const resetPasswordService = async (data) => {
+  const key = `reset:${data.email}`
 
   if (data.newPassword !== data.confirmPassword) {
     throw new AppError("Confirm password doesn't match", HTTP_STATUS.BAD_REQUEST, ERROR_CODES.BAD_REQUEST)
   }
 
-  const resetUser = await PasswordResetRepository.findPasswordResetByEmail(data.email)
+  const resetUser = await redisService.get(key)
+
 
   if (!resetUser) throw new AppError("Invalid request", HTTP_STATUS.BAD_REQUEST, ERROR_CODES.BAD_REQUEST)
 
-  if (resetUser.expiresAt < new Date()) throw new AppError("OTP expires", HTTP_STATUS.BAD_REQUEST, ERROR_CODES.BAD_REQUEST)
+  if ((resetUser.attempts || 0) >= 5) {
+    throw errorFactory.auth.otpAttemptsExceeded()
+  }
 
-  const isValid = otpHasher.verify(data.otp, resetUser.otp)
+  const isValid = await otpHasher.verify(data.otp, resetUser.otp)
 
 
   if (!isValid) {
-    resetUser.attempts += 1
-    PasswordResetRepository.savePasswordReset(resetUser)
+    resetData.attempts = (resetData.attempts || 0) + 1
+
+    await redisClient.set(key, JSON.stringify(resetData), {
+      KEEPTTL: true
+    })
+
     throw errorFactory.auth.otpInvalid()
   }
 
@@ -289,7 +302,7 @@ export const resetPasswordService = async (data) => {
 
   await sessionRepository.invalidateAll(user._id)
 
-  await PasswordResetRepository.deletePasswordResetByEmail({ email: data.email })
+  await redisService.del(key)
 
   return { message: "Password reset successfully" }
 }
@@ -309,7 +322,7 @@ export const logoutAllService = async (userId) => {
   await sessionRepository.invalidateAll(userId)
   return { message: 'All devices logout successfully' }
 }
-export const googleCallbackService = async (returnedState, storedState) => {
+export const googleCallbackService = async (returnedState, storedState) => {  
 
   if (!storedState || storedState !== returnedState) throw errorFactory.auth.invalidOAuthState()
 

@@ -50,9 +50,60 @@
         ::-webkit-scrollbar-thumb:hover { background: #F84464; }
     </style>
 </head>
+
 <body class="bg-background text-on-surface font-body antialiased">
+  <header class="bg-[#fff4f5]/70 dark:bg-slate-950/80 backdrop-blur-xl docked full-width top-0 sticky shadow-[0_4px_30px_rgba(0,0,0,0.03)] z-[60] font-medium tracking-tight text-sm">
+<!-- Top Row: Logo, Search, Trailing Actions -->
+<div class="flex flex-col w-full px-6 md:px-20 py-3 gap-4">
+<div class="flex items-center justify-between gap-8">
+<div class="flex items-center gap-8 flex-1">
+<a class="text-3xl font-black italic tracking-tighter text-[#DC3548] dark:text-red-500 uppercase" href="#">PREMIERE</a>
+<div class="relative flex-1 max-w-xl group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-1 focus:ring-[#DC3548]/30 transition-all text-sm" placeholder="Search for Movies, Events, Plays, Sports and Activities" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-[#DC3548] transition-colors">
+<span>Ranchi</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="bg-[#DC3548] text-white px-4 py-1.5 rounded text-xs font-bold active:scale-[0.98] transition-transform duration-200">
+                        Hi, Guest
+                    </button>
+<button class="text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Row: Navigation Links & Secondary Actions -->
+<div class="bg-slate-100 dark:bg-slate-800 h-[1px] opacity-10"></div>
+<div class="flex flex-col w-full px-6 md:px-20 py-2">
+<div class="flex items-center justify-between">
+<nav class="flex items-center gap-6">
+<a class="text-[#DC3548] dark:text-red-400 font-bold border-b-2 border-[#DC3548] pb-1" href="#">Movies</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#DC3548] transition-colors" href="#">Stream</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#DC3548] transition-colors" href="#">Events</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#DC3548] transition-colors" href="#">Plays</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#DC3548] transition-colors" href="#">Sports</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#DC3548] transition-colors" href="#">Activities</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#DC3548] transition-colors flex items-center gap-1" href="#">
+                        TATA IPL 2026
+                        <span class="bg-red-500 text-[8px] text-white px-1 rounded uppercase font-black">New</span>
+</a>
+</nav>
+<div class="hidden lg:flex items-center gap-5 text-[11px] text-slate-500 dark:text-slate-400">
+<a class="hover:text-[#DC3548] transition-colors" href="#">ListYourShow</a>
+<a class="hover:text-[#DC3548] transition-colors" href="#">Corporates</a>
+<a class="hover:text-[#DC3548] transition-colors" href="#">Offers</a>
+<a class="hover:text-[#DC3548] transition-colors" href="#">Gift Cards</a>
+</div>
+</div>
+</div>
+</header>
 <!-- SideNavBar (Authority: Shared Components JSON - COMPONENTS_8) -->
-<aside class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-zinc-950 flex flex-col border-r border-zinc-100 dark:border-zinc-800 font-['Inter'] font-medium antialiased z-50">
+<aside class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-zinc-950 flex flex-col border-r border-zinc-100 dark:border-zinc-800font-medium antialiased z-50">
 <div class="p-8">
 <div class="text-2xl font-black tracking-tighter text-[#b8083b] dark:text-[#db2d51]">BMS Admin</div>
 <div class="text-[10px] uppercase tracking-[0.1em] text-zinc-400 mt-1">Super Admin</div>

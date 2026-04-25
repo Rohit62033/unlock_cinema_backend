@@ -59,7 +59,7 @@ export const login = async (req, res, next) => {
         email: user.email,
         userId: user._id,
         role: user.role,
-        avatar: user.avatar
+        avatar: user.avatar.url
       }
     })
   } catch (error) {
@@ -208,10 +208,10 @@ export const googleAuth = (req, res, next) => {
 
   res.cookie("oauth_state", state, {
     httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    maxAge: 5 * 60 * 1000
-  })
+    secure: false,          // dev
+    sameSite: "lax",        // important
+    maxAge: 5 * 60 * 1000,
+  });
 
   passport.authenticate("google", {
     scope: ["profile", "email"],
@@ -224,6 +224,7 @@ export const googleAuth = (req, res, next) => {
 export const googleCallback = async (req, res, next) => {
   try {
     const storedState = req.cookies.oauth_state
+
     const returnedState = req.query.state
 
     await googleCallbackService(returnedState, storedState)
@@ -232,6 +233,7 @@ export const googleCallback = async (req, res, next) => {
 
     const { accessToken, refreshToken } =
       tokenService.generateTokens(user._id, user.role)
+      
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,

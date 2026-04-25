@@ -1,3 +1,4 @@
+import redisClient from '../../config/redisClient.js'
 import { HTTP_STATUS } from '../../constants/httpStatus.js'
 import * as movieService from './movie.service.js'
 
@@ -42,7 +43,7 @@ export const updateMovie = async (req, res, next) => {
 export const getMovieById = async (req, res, next) => {
   try {
 
-    const {id} = req.params
+    const { id } = req.params
     const movie = await movieService.getMovieById(id)
 
     res.status(HTTP_STATUS.OK).json({
@@ -75,6 +76,36 @@ export const getTrendingMovies = async (req, res, next) => {
       success: true,
       data: movies
     })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getTrendingSearch = async (req, res, next) => {
+  try {
+    const trendingSearch = await movieService.getTrendingSearchService()
+
+    return res.status(HTTP_STATUS.OK).json({
+      success: true,
+      trendingSearch
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const searchMovies = async (req, res, next) => {
+  try {
+    const { q } = req.query
+console.log("query:",q);
+
+    if (!q) {return res.status(401).json({ message: 'Query required' })}
+
+  const result = await movieService.searchMoviesService(q)
+
+  console.log(result);
+  res.json(result)
+
   } catch (error) {
     next(error)
   }

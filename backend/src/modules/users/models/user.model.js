@@ -46,10 +46,6 @@ const userSchema = new mongoose.Schema(
     deletedAt: {
       type: Date
     },
-    failedLoginAttempts:{
-      type:Number,
-      default:0
-    },
     googleId: {
       type: String,
       unique: true,

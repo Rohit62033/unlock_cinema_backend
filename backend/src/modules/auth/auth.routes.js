@@ -7,8 +7,8 @@ import { validateBody } from "../../middlewares/validate.middleware.js"
 import { changePasswordSchema, forgotPasswordSchema, loginSchema, registrationSchema, resetPasswordSchema, sendOtpSchema, setPasswordSchema, verifyOtpSchema } from "./auth.validation.js"
 
 const router = express.Router()
-
-router.post("/register", otpLimiter, validateBody(registrationSchema), register)
+//, otpLimiter
+router.post("/register", validateBody(registrationSchema), register)
 
 router.post("/verify-otp", validateBody(verifyOtpSchema), verifyOtp)
 

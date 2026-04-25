@@ -75,5 +75,22 @@ export const movieRepository = {
         ERROR_CODES.DATABASE_ERROR
       )
     }
+  },
+  async findTrendingSearch(query) {
+    try {
+      return await Movie.find({
+        title: { $regex: query, $options: 'i' },
+      })
+        .select('_id title')
+        .limit(10)
+        .lean()
+
+    } catch (error) {
+      throw new AppError(
+        "Failed to fetch trending search",
+        HTTP_STATUS.CONFLICT,
+        ERROR_CODES.DATABASE_ERROR
+      )
+    }
   }
 }

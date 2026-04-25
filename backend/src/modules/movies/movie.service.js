@@ -1,6 +1,7 @@
 import { Booking } from '../bookings/booking.model.js'
 import { movieRepository } from './repo/movie.repo.js'
 import { errorFactory } from '../../errors/errorFactory.js'
+import redisClient from '../../config/redisClient.js';
 
 
 export const createMovie = async (userId, data) => {
@@ -196,6 +197,44 @@ export const getTrendingMovies = async () => {
     { $limit: 10 }
   ])
 
-  
+
   return result
+}
+
+export const getTrendingSearchService = async () => {
+  return [
+    { id: "69bd1f8c5be815562bfc2c48", title: "Interstellar", type: "movie" },
+    { id: "69bd1f8c5be815562bfc2c4b", title: "Endgame", type: "movie" },
+    { id: "69bd1f8c5be815562bfc2c4d", title: "Jawan", type: "movie" }
+  ];
+}
+
+export const searchMoviesService = async (query) => {
+  const cacheKey = `search:${query}`
+
+  const cached = await redisClient.get(cacheKey)
+console.log("1");
+
+  if (cached) {
+    console.log("cache:",JSON.parse(cached));
+    
+    return res.json(JSON.parse(cached))
+  }
+  console.log("2");
+
+  const movies = await movieRepository.findTrendingSearch(query)
+
+  console.log("3");
+  const formatted = movies.map((m) => ({
+    id: m._id,
+    title: m.title,
+    type: "movie"
+  }))
+
+  console.log("4");
+
+  await redisClient.setEx(cacheKey, 300, JSON.stringify(formatted))
+
+  console.log("5");
+  return formatted
 }
